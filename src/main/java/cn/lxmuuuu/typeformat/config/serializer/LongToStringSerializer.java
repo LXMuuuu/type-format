@@ -1,14 +1,12 @@
 package cn.lxmuuuu.typeformat.config.serializer;
 
-import cn.lxmuuuu.typeformat.anno.StringFormat;
+import cn.lxmuuuu.typeformat.anno.IFormat;
+import cn.lxmuuuu.typeformat.anno.IFormatEnum;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 自定义序列化规则
@@ -38,9 +36,11 @@ public class LongToStringSerializer extends JsonSerializer<Long> implements Cont
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider serializerProvider, BeanProperty beanProperty) throws JsonMappingException {
         if (beanProperty != null) {
-            boolean isStringFormat = beanProperty.getMember().hasAnnotation(StringFormat.class);
-            if (isStringFormat) {
-                return new LongToStringSerializer();
+            boolean isFormat = beanProperty.getMember().hasAnnotation(IFormat.class);
+            if (isFormat) {
+                boolean isValidity = beanProperty.getAnnotation(IFormat.class).type().compare(IFormatEnum.Long_To_String);
+                if (isValidity)
+                    return new LongToStringSerializer();
             }
         }
         // 未被@StringFormat标注的Long类型属性走默认值

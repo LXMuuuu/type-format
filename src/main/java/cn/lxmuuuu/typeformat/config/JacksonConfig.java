@@ -1,12 +1,14 @@
 package cn.lxmuuuu.typeformat.config;
 
+import cn.lxmuuuu.typeformat.config.serializer.DateToStringSerializer;
 import cn.lxmuuuu.typeformat.config.serializer.LongToStringSerializer;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.databind.ser.std.StdKeySerializers;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.*;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
+
+import java.util.Date;
 
 
 @Configuration
@@ -34,6 +36,7 @@ public class JacksonConfig {
         SimpleModule simpleModule = new SimpleModule();
         // 添加序列化规则，当为Long类型时进行处理，由自定义序列化配置StringSerializer实现。
         simpleModule.addSerializer(Long.class, new LongToStringSerializer());
+        simpleModule.addSerializer(Date.class, new DateToStringSerializer());
         objectMapper.registerModule(simpleModule);
         return objectMapper;
     }
